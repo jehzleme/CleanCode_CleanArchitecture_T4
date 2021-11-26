@@ -1,4 +1,6 @@
-﻿namespace CleanCodeCleanArchitecture.Dominio
+﻿using System.Text.RegularExpressions;
+
+namespace CleanCodeCleanArchitecture.Dominio
 {
     public class Cpf
     {
@@ -15,37 +17,33 @@
         {
             int[] multiplicador1 = new int[9] { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
             int[] multiplicador2 = new int[10] { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 };
-            string novePrimeirosDigitosCpf;
             string digito;
-            int soma;
             int resto;
 
-            cpf = cpf.Trim();
-            cpf = cpf.Replace(".", "").Replace("-", "");
+            cpf = Regex.Replace(cpf, "[\\D]", "");
 
-            if (cpf.Length != 11)
-                return false;
-            novePrimeirosDigitosCpf = cpf.Substring(0, 9);
-            soma = 0;
+            if (cpf.Length != 11) return false;
 
-            for (int i = 0; i < 9; i++)
-                soma += int.Parse(novePrimeirosDigitosCpf[i].ToString()) * multiplicador1[i];
-            resto = soma % 11;
+            var novePrimeirosDigitosCpf = cpf.Substring(0, 9);
 
-            resto = resto < 2 ? 0 : 11 - resto;
-
+            MultiplicarDigitos(multiplicador1, novePrimeirosDigitosCpf, out resto);
             digito = resto.ToString();
             novePrimeirosDigitosCpf += digito;
-            soma = 0;
 
-            for (int i = 0; i < 10; i++)
-                soma += int.Parse(novePrimeirosDigitosCpf[i].ToString()) * multiplicador2[i];
-            resto = soma % 11;
-
-            resto = resto < 2 ? 0 : 11 - resto;
-
+            MultiplicarDigitos(multiplicador2, novePrimeirosDigitosCpf, out resto);
             digito += resto.ToString();
             return cpf.EndsWith(digito);
+        }
+
+        private static void MultiplicarDigitos(int[] multiplicador, string novePrimeirosDigitosCpf, out int resto)
+        {
+            var soma = 0;
+
+            for (int i = 0; i < multiplicador.Length; i++)
+                soma += int.Parse(novePrimeirosDigitosCpf[i].ToString()) * multiplicador[i];
+
+            resto = soma % 11;
+            resto = resto < 2 ? 0 : 11 - resto;
         }
     }
 }
