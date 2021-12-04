@@ -1,15 +1,15 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace CleanCodeCleanArchitecture.Dominio
+namespace CleanCodeCleanArchitecture.Dominio.Entidades
 {
-    public class Desconto
+    public class Cupom
     {
-        public string Cupom { get; set; }
+        public string Descricao { get; set; }
         public double Porcentagem { get; private set; }
 
-        public Desconto(string cupom)
+        public Cupom(string cupom)
         {
-            Cupom = cupom;
+            Descricao = cupom;
             Porcentagem = CalcularPorcentagem(cupom);
         }
 

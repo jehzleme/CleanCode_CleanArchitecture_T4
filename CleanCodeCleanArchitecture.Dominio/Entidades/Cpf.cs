@@ -1,38 +1,42 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Linq;
+using System.Text.RegularExpressions;
 
-namespace CleanCodeCleanArchitecture.Dominio
+namespace CleanCodeCleanArchitecture.Dominio.Entidades
 {
     public class Cpf
     {
         public string Numero { get; private set; }
-        public bool Valido { get; private set; }
 
         public Cpf(string cpf)
         {
+            if (!ValidarCpf(cpf)) { throw new Exception("CPF inválido."); }
             Numero = cpf;
-            Valido = ValidarCpf(cpf);
         }
 
         private bool ValidarCpf(string cpf)
         {
+            if (string.IsNullOrEmpty(cpf)) return false;
+            var digitosCpf = Regex.Replace(cpf, "[\\D]", "");
+            if (digitosCpf.Length != 11) return false;
+            if (VerificarDigitosRepetidos(digitosCpf)) return false;
+
             int[] multiplicador1 = new int[9] { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
             int[] multiplicador2 = new int[10] { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 };
-            string digito;
-            int resto;
+            var novePrimeirosDigitosCpf = digitosCpf.Substring(0, 9);
 
-            cpf = Regex.Replace(cpf, "[\\D]", "");
-
-            if (cpf.Length != 11) return false;
-
-            var novePrimeirosDigitosCpf = cpf.Substring(0, 9);
-
-            MultiplicarDigitos(multiplicador1, novePrimeirosDigitosCpf, out resto);
-            digito = resto.ToString();
+            MultiplicarDigitos(multiplicador1, novePrimeirosDigitosCpf, out int resto);
+            var digito = resto.ToString();
             novePrimeirosDigitosCpf += digito;
 
             MultiplicarDigitos(multiplicador2, novePrimeirosDigitosCpf, out resto);
             digito += resto.ToString();
             return cpf.EndsWith(digito);
+        }
+
+        private static bool VerificarDigitosRepetidos(string cpf)
+        {
+            return cpf.All(caracter => caracter == cpf[0]);
         }
 
         private static void MultiplicarDigitos(int[] multiplicador, string novePrimeirosDigitosCpf, out int resto)

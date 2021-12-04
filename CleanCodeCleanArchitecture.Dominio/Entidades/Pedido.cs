@@ -1,49 +1,50 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
-namespace CleanCodeCleanArchitecture.Dominio
+namespace CleanCodeCleanArchitecture.Dominio.Entidades
 {
     public class Pedido
     {
-        private List<Item> _itens;
         public Cpf Cpf { get; private set; }
         public Status Status { get; private set; }
-        public IReadOnlyCollection<Item> Itens => _itens;
-        public double ValorTotal { get; private set; }
-        public Desconto Desconto { get; set; }
-        public double ValorFinal { get; private set; }
+        public IReadOnlyCollection<PedidoItem> PedidoItens => _pedidoItens;
+        public double SubTotal { get; private set; }
+        public Cupom Desconto { get; private set; }
+        public double Total { get; private set; }
+        private List<PedidoItem> _pedidoItens;
 
-
-        public Pedido(Cpf cpf)
+        public Pedido(string cpf)
         {
-            Cpf = cpf;
-            Status = AlterarStatus(cpf);
-            _itens = new List<Item>();
-            ValorTotal = SomarTotal(_itens);
+            Cpf = new Cpf(cpf);
+            _pedidoItens = new List<PedidoItem>();
+            Status = AlterarStatus(Cpf);
         }
 
-        public void AdicionarItens(IEnumerable<Item> itens)
+        public void AdicionarItem(Item item, int quantidade)
         {
-            _itens.AddRange(itens);
+            _pedidoItens.Add(new PedidoItem(item.Id, item.Preco, quantidade));
+            SomarSubTotal();
         }
 
-        public void AdicionarCupom(Desconto desconto)
+        public void AdicionarCupom(Cupom desconto)
         {
-            ValorFinal = ValorTotal - (ValorTotal * desconto.Porcentagem / 100);
+            Desconto = desconto;
+            DescontarCupom();
         }
 
         private Status AlterarStatus(Cpf cpf)
         {
-            return cpf.Valido ? Status.Realizado : Status.Recusado;
+            return cpf is null ? Status.Recusado : Status.Realizado;
         }
 
-        private double SomarTotal(ICollection<Item> itens)
+        private void SomarSubTotal()
         {
-            double valorTotal = 0;
-            foreach (var item in itens)
-            {
-                valorTotal += item.Preco;
-            }
-            return valorTotal;
+            SubTotal = _pedidoItens.Sum(pedidoItem => pedidoItem.SomarTotal());
+        }
+
+        private void DescontarCupom()
+        {
+            Total = SubTotal - (SubTotal * Desconto.Porcentagem / 100);
         }
     }
 
