@@ -6,19 +6,18 @@ namespace CleanCodeCleanArchitecture.Dominio.Entidades
 {
     public class PedidoItem
     {
-        public Guid IdItem { get; private set; }
-        public double PrecoItem { get; private set; }
+        public Item Item { get; private set; }
         public int Quantidade { get; private set; }
-        public PedidoItem(Guid idItem, double precoItem, int quantidade)
+
+        public PedidoItem(Item item, int quantidade)
         {
-            IdItem = idItem;
-            PrecoItem = precoItem;
+            Item = item;
             Quantidade = quantidade;
         }
 
-        public double SomarTotal()
+        public double SomarSubTotal()
         {
-            return PrecoItem * Quantidade;
+            return Item.Preco * Quantidade;
         }
     }
 }

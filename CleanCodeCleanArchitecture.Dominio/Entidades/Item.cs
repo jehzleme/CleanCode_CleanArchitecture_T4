@@ -4,15 +4,33 @@ namespace CleanCodeCleanArchitecture.Dominio.Entidades
 {
     public class Item
     {
-        public Guid Id { get; private set;  }
+        public Guid Id { get; private set; }
         public string Descricao { get; private set; }
         public double Preco { get; private set; }
+        public double Altura { get; private set; }
+        public double Largura { get; private set; }
+        public double Profundidade { get; private set; }
+        public double Peso { get; private set; }
 
-        public Item(string descricao, double preco)
+        public Item(string descricao, double preco, double altura, double largura, double profundidade, double peso)
         {
             Id = Guid.NewGuid();
             Descricao = descricao;
             Preco = preco;
+            Altura = altura;
+            Largura = largura;
+            Profundidade = profundidade;
+            Peso = peso;
+        }
+
+        public double CalcularVolume()
+        {
+            return Altura * Largura * Profundidade;
+        }
+
+        public double CalcularDensidade()
+        {
+            return Peso / CalcularVolume();
         }
     }
 }

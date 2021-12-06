@@ -9,16 +9,16 @@ namespace CleanCodeCleanArchitecture.Dominio.Tests
     public class PedidoTest
     {
         [Test]
-        public void Deve_Fazer_Pedido_Com_Cpf_Valido()
+        public void Deve_Permitir_Criar_Pedido_Com_Cpf_Valido()
         {
-            var cpf ="821.369.750-21";
+            var cpf = "821.369.750-21";
             var pedido = new Pedido(cpf);
 
-            pedido.Status.Should().Be(Status.Realizado);
+            pedido.Status.Should().Be(Status.Aguardando);
         }
         
         [Test]
-        public void Nao_Deve_Fazer_Pedido_Com_Cpf_Invalido()
+        public void Deve_Impedir_Criar_Pedido_Com_Cpf_Invalido()
         {
             var cpf = "123.456.789-00";
 
@@ -33,9 +33,9 @@ namespace CleanCodeCleanArchitecture.Dominio.Tests
             var cpf = "821.369.750-21";
             var pedido = new Pedido(cpf);
 
-            pedido.AdicionarItem(new Item("Caneta", 1.50), 2);
-            pedido.AdicionarItem(new Item("Bicicleta", 2000.0), 1);
-            pedido.AdicionarItem(new Item("Mouse", 50.50), 2);
+            pedido.AdicionarItem(new Item("Caneta", 1.50, 15, 3, 1, 0.01), 2);
+            pedido.AdicionarItem(new Item("Bicicleta", 2000.0, 70, 150, 40, 2.5), 1);
+            pedido.AdicionarItem(new Item("Mouse", 50.50, 4, 6, 8, 0.02), 2);
 
             pedido.PedidoItens.Count().Should().Be(3);
         }
@@ -45,11 +45,10 @@ namespace CleanCodeCleanArchitecture.Dominio.Tests
         {
             var cpf = "821.369.750-21";
             var pedido = new Pedido(cpf);
-            var desconto = new Cupom("40off");
+            var desconto = new Cupom("40off", DateTime.Now.AddDays(-1), DateTime.Now.AddDays(1));
 
-            pedido.AdicionarItem(new Item("Caneta", 1.50), 2);
-            pedido.AdicionarItem(new Item("Bicicleta", 2000.0), 1);
-            pedido.AdicionarItem(new Item("Mouse", 50.50), 2);
+            pedido.AdicionarItem(new Item("Caneta", 1.50, 15, 3, 1, 0.01), 2);
+            pedido.AdicionarItem(new Item("Bicicleta", 2000.0, 70, 150, 40, 2.5), 1);
             pedido.AdicionarCupom(desconto);
 
             var expected = pedido.SubTotal - (pedido.SubTotal * desconto.Porcentagem / 100);

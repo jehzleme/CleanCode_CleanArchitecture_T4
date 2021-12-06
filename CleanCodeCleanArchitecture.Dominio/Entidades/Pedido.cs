@@ -5,11 +5,14 @@ namespace CleanCodeCleanArchitecture.Dominio.Entidades
 {
     public class Pedido
     {
+        public const double VALOR_MINIMO_FRETE = 10.00;
+
         public Cpf Cpf { get; private set; }
         public Status Status { get; private set; }
         public IReadOnlyCollection<PedidoItem> PedidoItens => _pedidoItens;
         public double SubTotal { get; private set; }
         public Cupom Desconto { get; private set; }
+        public double Frete { get; private set; }
         public double Total { get; private set; }
         private List<PedidoItem> _pedidoItens;
 
@@ -17,40 +20,50 @@ namespace CleanCodeCleanArchitecture.Dominio.Entidades
         {
             Cpf = new Cpf(cpf);
             _pedidoItens = new List<PedidoItem>();
-            Status = AlterarStatus(Cpf);
+            Status = Status.Aguardando;
         }
 
         public void AdicionarItem(Item item, int quantidade)
         {
-            _pedidoItens.Add(new PedidoItem(item.Id, item.Preco, quantidade));
+            _pedidoItens.Add(new PedidoItem(item, quantidade));
             SomarSubTotal();
         }
 
         public void AdicionarCupom(Cupom desconto)
         {
-            Desconto = desconto;
-            DescontarCupom();
+            if (desconto.Valido)
+            {
+                Desconto = desconto;
+                DescontarCupom();
+            }
         }
 
-        private Status AlterarStatus(Cpf cpf)
+        public void CalcularFrete(double distancia)
         {
-            return cpf is null ? Status.Recusado : Status.Realizado;
+            double valorFrete = 0;
+            foreach (var item in _pedidoItens)
+            {
+                valorFrete = item.Item.CalcularVolume() * (item.Item.CalcularDensidade() / 100) * item.Quantidade;
+            }
+            valorFrete *= distancia;
+
+            Frete = valorFrete < VALOR_MINIMO_FRETE ? VALOR_MINIMO_FRETE : valorFrete;
         }
 
-        private void SomarSubTotal()
+        private Status AlterarStatus()
         {
-            SubTotal = _pedidoItens.Sum(pedidoItem => pedidoItem.SomarTotal());
+            return Status;
         }
 
-        private void DescontarCupom()
-        {
-            Total = SubTotal - (SubTotal * Desconto.Porcentagem / 100);
-        }
+        private void SomarSubTotal() => SubTotal = _pedidoItens.Sum(pedidoItem => pedidoItem.SomarSubTotal());
+
+        private void DescontarCupom() => Total = SubTotal - (SubTotal * Desconto.Porcentagem / 100);
     }
 
     public enum Status
     {
-        Realizado = 1,
-        Recusado = 2
+        Aguardando,
+        Realizado,
+        Recusado
     }
 }
