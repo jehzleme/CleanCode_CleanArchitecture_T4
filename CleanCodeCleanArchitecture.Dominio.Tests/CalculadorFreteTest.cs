@@ -4,8 +4,10 @@ using NUnit.Framework;
 
 namespace CleanCodeCleanArchitecture.Dominio.Tests
 {
-    public class FreteTest
+    public class CalculadorFreteTest
     {
+        public const double VALOR_MINIMO_FRETE = 10.00;
+
         [Test]
         public void Deve_Calcular_Frete_Maior_Que_Valor_Minimo()
         {
@@ -16,7 +18,7 @@ namespace CleanCodeCleanArchitecture.Dominio.Tests
 
             pedido.CalcularFrete(distancia);
 
-            pedido.Frete.Should().BeGreaterThan(10);
+            pedido.Frete.Should().BeGreaterThan(VALOR_MINIMO_FRETE);
         }
         
         [Test]
@@ -29,7 +31,7 @@ namespace CleanCodeCleanArchitecture.Dominio.Tests
            
             pedido.CalcularFrete(distancia);
 
-            pedido.Frete.Should().Be(10);
+            pedido.Frete.Should().Be(VALOR_MINIMO_FRETE);
         }
     }
 }

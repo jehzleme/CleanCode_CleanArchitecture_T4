@@ -7,11 +7,11 @@ namespace CleanCodeCleanArchitecture.Dominio.Entidades
     {
         public string Descricao { get; private set; }
         public double Porcentagem { get; private set; }
-        public DateTime InicioVigencia { get; private set; }
-        public DateTime FinalVigencia { get; private set; }
+        public DateTime? InicioVigencia { get; private set; }
+        public DateTime? FinalVigencia { get; private set; }
         public bool Valido { get; private set; }
 
-        public Cupom(string cupom, DateTime inicioVigencia, DateTime finalVigencia)
+        public Cupom(string cupom, DateTime? inicioVigencia, DateTime? finalVigencia)
         {
             Descricao = cupom;
             InicioVigencia = inicioVigencia;
@@ -29,6 +29,7 @@ namespace CleanCodeCleanArchitecture.Dominio.Entidades
 
         private bool ValidarCupom(Cupom cupom)
         {
+            if (InicioVigencia == null && FinalVigencia == null) return true;
             return DateTime.UtcNow >= cupom.InicioVigencia && DateTime.UtcNow <= cupom.FinalVigencia;
         }
     }

@@ -15,7 +15,7 @@ namespace CleanCodeCleanArchitecture.Dominio.Entidades
             Quantidade = quantidade;
         }
 
-        public double SomarSubTotal()
+        public double SomarSubTotalItem()
         {
             return Item.Preco * Quantidade;
         }

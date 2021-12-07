@@ -32,5 +32,18 @@ namespace CleanCodeCleanArchitecture.Dominio.Tests
 
             pedido.Desconto.Should().Be(desconto);
         }
+        
+        [Test]
+        public void Deve_Aplicar_Cupom_Sem_Data_Vigencia()
+        {
+            var cpf = "821.369.750-21";
+            var pedido = new Pedido(cpf);
+            var desconto = new Cupom("5off", null, null);
+            pedido.AdicionarItem(new Item("Caneta", 1.50, 15, 3, 1, 0.01), 2);
+            
+            pedido.AdicionarCupom(desconto);
+
+            pedido.Desconto.Should().Be(desconto);
+        }
     }
 }

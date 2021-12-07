@@ -5,7 +5,7 @@ namespace CleanCodeCleanArchitecture.Dominio.Entidades
 {
     public class Pedido
     {
-        public const double VALOR_MINIMO_FRETE = 10.00;
+
 
         public Cpf Cpf { get; private set; }
         public Status Status { get; private set; }
@@ -40,14 +40,7 @@ namespace CleanCodeCleanArchitecture.Dominio.Entidades
 
         public void CalcularFrete(double distancia)
         {
-            double valorFrete = 0;
-            foreach (var item in _pedidoItens)
-            {
-                valorFrete = item.Item.CalcularVolume() * (item.Item.CalcularDensidade() / 100) * item.Quantidade;
-            }
-            valorFrete *= distancia;
-
-            Frete = valorFrete < VALOR_MINIMO_FRETE ? VALOR_MINIMO_FRETE : valorFrete;
+            Frete = CalculadorFrete.Calcular(_pedidoItens, distancia);
         }
 
         private Status AlterarStatus()
@@ -55,7 +48,11 @@ namespace CleanCodeCleanArchitecture.Dominio.Entidades
             return Status;
         }
 
-        private void SomarSubTotal() => SubTotal = _pedidoItens.Sum(pedidoItem => pedidoItem.SomarSubTotal());
+        private void SomarSubTotal()
+        {
+            SubTotal = _pedidoItens.Sum(pedidoItem => pedidoItem.SomarSubTotalItem());
+            Total = SubTotal;
+        }
 
         private void DescontarCupom() => Total = SubTotal - (SubTotal * Desconto.Porcentagem / 100);
     }

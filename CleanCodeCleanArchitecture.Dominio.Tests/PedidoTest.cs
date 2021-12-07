@@ -41,17 +41,31 @@ namespace CleanCodeCleanArchitecture.Dominio.Tests
         }
 
         [Test]
-        public void Deve_Fazer_Pedido_Com_Cupom_Desconto()
+        public void Deve_Fazer_Pedido_Com_Cupom_Desconto_Vigente()
         {
             var cpf = "821.369.750-21";
             var pedido = new Pedido(cpf);
             var desconto = new Cupom("40off", DateTime.Now.AddDays(-1), DateTime.Now.AddDays(1));
 
             pedido.AdicionarItem(new Item("Caneta", 1.50, 15, 3, 1, 0.01), 2);
-            pedido.AdicionarItem(new Item("Bicicleta", 2000.0, 70, 150, 40, 2.5), 1);
             pedido.AdicionarCupom(desconto);
 
             var expected = pedido.SubTotal - (pedido.SubTotal * desconto.Porcentagem / 100);
+
+            pedido.Total.Should().Be(expected);
+        }
+        
+        [Test]
+        public void Deve_Fazer_Pedido_Com_Cupom_Desconto_Expirado()
+        {
+            var cpf = "821.369.750-21";
+            var pedido = new Pedido(cpf);
+            var desconto = new Cupom("40off", null, DateTime.Now.AddDays(-1));
+
+            pedido.AdicionarItem(new Item("Caneta", 1.50, 15, 3, 1, 0.01), 2);
+            pedido.AdicionarCupom(desconto);
+
+            var expected = pedido.SubTotal;
 
             pedido.Total.Should().Be(expected);
         }
