@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 
-namespace CleanCodeCleanArchitecture.Dominio.Entidades
+namespace CCCA.Dominio.Entidades
 {
     public class Cupom
     {

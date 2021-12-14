@@ -1,9 +1,9 @@
-﻿using CleanCodeCleanArchitecture.Dominio.Entidades;
+﻿using CCCA.Dominio.Entidades;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CleanCodeCleanArchitecture.Dominio
+namespace CCCA.Dominio
 {
     public class CalculadorFrete
     {

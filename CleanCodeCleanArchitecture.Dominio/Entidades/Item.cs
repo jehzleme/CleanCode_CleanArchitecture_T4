@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CleanCodeCleanArchitecture.Dominio.Entidades
+namespace CCCA.Dominio.Entidades
 {
     public class Item
     {

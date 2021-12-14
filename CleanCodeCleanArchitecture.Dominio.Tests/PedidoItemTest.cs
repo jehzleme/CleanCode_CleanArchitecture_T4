@@ -1,8 +1,8 @@
-﻿using CleanCodeCleanArchitecture.Dominio.Entidades;
+﻿using CCCA.Dominio.Entidades;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace CleanCodeCleanArchitecture.Dominio.Tests
+namespace CCCA.Dominio.Tests
 {
     public class PedidoItemTest
     {
