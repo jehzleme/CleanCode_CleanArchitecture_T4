@@ -1,20 +1,27 @@
 ﻿using CCCA.Dominio.Entidades;
-using System;
+using CCCA.Dominio.Interfaces;
 using System.Collections.Generic;
-using System.Text;
 
 namespace CCCA.Dominio
 {
-    public class CalculadorFrete
+    public class CalculadorFrete : ICalculadorFrete
     {
+        private readonly IItemRepository _itemRepository;
+
+        public CalculadorFrete(IItemRepository itemRepository)
+        {
+            _itemRepository = itemRepository;
+        }
+
         public const double VALOR_MINIMO_FRETE = 10.00;
 
-        public static double Calcular(List<PedidoItem> pedidoItens, double distancia)
+        public double Calcular(List<PedidoItem> pedidoItens, double distancia)
         {
             double valorFrete = 0;
-            foreach (var item in pedidoItens)
+            foreach (var pedidoItem in pedidoItens)
             {
-                valorFrete = item.Item.CalcularVolume() * (item.Item.CalcularDensidade() / 100) * item.Quantidade;
+                var item = _itemRepository.ObterPorId(pedidoItem.ItemId).Result;
+                valorFrete = item.CalcularVolume() * (item.CalcularDensidade() / 100) * pedidoItem.Quantidade;
             }
             valorFrete *= distancia;
 

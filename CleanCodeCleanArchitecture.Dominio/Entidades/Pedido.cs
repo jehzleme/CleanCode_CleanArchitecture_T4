@@ -1,14 +1,13 @@
-﻿using System;
+﻿using CCCA.Dominio.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace CCCA.Dominio.Entidades
 {
     public class Pedido
     {
-        public string Codigo { get; private set; }
+        public PedidoCodigo Codigo { get; private set; }
         public DateTime Data { get; private set; }
         public Cpf Cpf { get; private set; }
         public Status Status { get; private set; }
@@ -17,34 +16,21 @@ namespace CCCA.Dominio.Entidades
         public Cupom Desconto { get; private set; }
         public double Frete { get; private set; }
         public double Total { get; private set; }
-        private List<PedidoItem> _pedidoItens;
+        private readonly List<PedidoItem> _pedidoItens;
 
-
-        public Pedido(string cpf, DateTime data)
+        public Pedido(string cpf, DateTime data, int sequencia = 1)
         {
             Data = data;
-            Codigo = GerarCodigoPedido(data);
+            Codigo = new PedidoCodigo(data, sequencia);
             Cpf = new Cpf(cpf);
             _pedidoItens = new List<PedidoItem>();
             Status = Status.Aguardando;
-        }
-
-        private string GerarCodigoPedido(DateTime data)
-        {
-            var ano = data.Year.ToString();
-
-            var sequencia = 
-
-            var sb = new StringBuilder();
-            sb.Append(ano);
-            sb.Append();
-            
-            return ano;
+            Frete = 0;
         }
 
         public void AdicionarItem(Item item, int quantidade)
         {
-            _pedidoItens.Add(new PedidoItem(item, quantidade));
+            _pedidoItens.Add(new PedidoItem(item.Id, item.Preco, quantidade));
             SomarSubTotal();
         }
 
@@ -57,9 +43,9 @@ namespace CCCA.Dominio.Entidades
             }
         }
 
-        public void CalcularFrete(double distancia)
+        public void CalcularFrete(double distancia, ICalculadorFrete calculadorFrete)
         {
-            Frete = CalculadorFrete.Calcular(_pedidoItens, distancia);
+            Frete = calculadorFrete.Calcular(_pedidoItens, distancia);
 
             if (Frete > 0)
                 Total += Frete;
@@ -76,7 +62,7 @@ namespace CCCA.Dominio.Entidades
             Total = SubTotal;
         }
 
-        private void DescontarCupom() => Total = SubTotal - (SubTotal * Desconto.Porcentagem / 100);
+        private void DescontarCupom() => Total = SubTotal - (SubTotal * Desconto.Desconto / 100);
     }
 
     public enum Status

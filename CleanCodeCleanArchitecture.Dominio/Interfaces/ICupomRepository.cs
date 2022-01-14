@@ -5,6 +5,6 @@ namespace CCCA.Dominio.Interfaces
 {
     public interface ICupomRepository
     {
-        Task<Cupom> ObterPorDescricao(string codigoCupom);
+        Task<Cupom> ObterPorDescricao(string descricaoCupom);
     }
 }

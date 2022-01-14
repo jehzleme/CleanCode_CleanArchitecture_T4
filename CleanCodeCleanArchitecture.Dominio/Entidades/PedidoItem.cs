@@ -1,23 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace CCCA.Dominio.Entidades
 {
     public class PedidoItem
     {
-        public Item Item { get; private set; }
+        public Guid ItemId { get; private set; }
+        public double Preco { get; private set; }
         public int Quantidade { get; private set; }
 
-        public PedidoItem(Item item, int quantidade)
+        public PedidoItem(Guid itemId, double preco, int quantidade)
         {
-            Item = item;
+            ItemId = itemId;
+            Preco = preco;
             Quantidade = quantidade;
         }
 
         public double SomarSubTotalItem()
         {
-            return Item.Preco * Quantidade;
+            return Preco * Quantidade;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using CCCA.Dominio.Entidades;
+﻿using CCCA.Dominio;
+using CCCA.Dominio.Entidades;
 using CCCA.Dominio.Interfaces;
 using System;
 using System.Threading.Tasks;
@@ -10,12 +11,14 @@ namespace CCCA.Aplicacao
         private readonly IItemRepository _itemRepository;
         private readonly IPedidoRepository _pedidoRepository;
         private readonly ICupomRepository _cupomRepository;
+        private readonly ICalculadorFrete _calculadorFrete;
 
-        public PedidoService(IItemRepository itemRepository, IPedidoRepository pedidoRepository, ICupomRepository cupomRepository)
+        public PedidoService(IItemRepository itemRepository, IPedidoRepository pedidoRepository, ICupomRepository cupomRepository, ICalculadorFrete calculadorFrete)
         {
             _itemRepository = itemRepository;
             _pedidoRepository = pedidoRepository;
             _cupomRepository = cupomRepository;
+            _calculadorFrete = calculadorFrete;
         }
 
         public async Task<PedidoFeitoCommand> ExecutarAsync(PedidoCommand command)
@@ -36,7 +39,10 @@ namespace CCCA.Aplicacao
                     pedido.AdicionarCupom(cupom);
             }
 
+            pedido.CalcularFrete(command.Distancia, _calculadorFrete);
+
             await _pedidoRepository.Salvar(pedido);
+
             return new PedidoFeitoCommand(pedido.Total);
         }
     }

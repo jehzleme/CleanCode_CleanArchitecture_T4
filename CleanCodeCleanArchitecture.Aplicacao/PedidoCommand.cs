@@ -1,7 +1,5 @@
-﻿using CCCA.Dominio.Entidades;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace CCCA.Aplicacao
 {
@@ -11,13 +9,15 @@ namespace CCCA.Aplicacao
         public ICollection<PedidoItemCommand> PedidoItens { get; set; }
         public DateTime Data{ get; set; }
         public string Cupom { get; set; }
+        public double Distancia { get; set; }
 
-        public PedidoCommand(string cpf, ICollection<PedidoItemCommand> pedidoItens, DateTime data, string cupom)
+        public PedidoCommand(string cpf, ICollection<PedidoItemCommand> pedidoItens, DateTime data, string cupom, double distancia)
         {
             Cpf = cpf;
             PedidoItens = pedidoItens;
             Data = data;
             Cupom = cupom;
+            Distancia = distancia;
         }
     }
 }
