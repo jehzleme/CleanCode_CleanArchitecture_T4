@@ -14,7 +14,6 @@ namespace CCCA.Dominio.Entidades
 
         public Item(string descricao, double preco, double altura, double largura, double profundidade, double peso)
         {
-            Id = Guid.NewGuid();
             Descricao = descricao;
             Preco = preco;
             Altura = altura;

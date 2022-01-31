@@ -1,5 +1,4 @@
-﻿using CCCA.Dominio;
-using CCCA.Dominio.Interfaces;
+﻿using CCCA.Dominio.Interfaces;
 using CCCA.Infra.Memoria;
 using FluentAssertions;
 using NUnit.Framework;
@@ -14,7 +13,6 @@ namespace CCCA.Aplicacao.Tests
         private IItemRepository _itemRepository;
         private IPedidoRepository _pedidoRepository;
         private ICupomRepository _cupomRepository;
-        private ICalculadorFrete _calculadorFrete;
 
         [SetUp]
         public void SetUp()
@@ -22,7 +20,6 @@ namespace CCCA.Aplicacao.Tests
             _itemRepository = new ItemRepositoryMemory();
             _pedidoRepository = new PedidoRepositoryMemory();
             _cupomRepository = new CupomRepositoryMemory();
-            _calculadorFrete = new CalculadorFrete(_itemRepository);
         }
 
         [TestCase("40off", 1210, TestName = "Deve_Fazer_Pedido_Com_Cupom_Valido")]
@@ -36,7 +33,7 @@ namespace CCCA.Aplicacao.Tests
                new PedidoItemCommand { ItemId = Guid.Parse("80fbfab2-7266-11ec-90d6-0242ac120003"), Quantidade = 1 },
             };
             var command = new PedidoCommand("821.369.750-21", pedidoItens, DateTime.Now, cupom, default);
-            var pedidoService = new PedidoService(_itemRepository, _pedidoRepository, _cupomRepository, _calculadorFrete);
+            var pedidoService = new PedidoService(_itemRepository, _pedidoRepository, _cupomRepository);
 
             var actual = await pedidoService.ExecutarAsync(command);
 
@@ -53,7 +50,7 @@ namespace CCCA.Aplicacao.Tests
                new PedidoItemCommand { ItemId = Guid.Parse("55ab9ea8-7266-11ec-90d6-0242ac120003"), Quantidade = 2 },
             };
             var command = new PedidoCommand("821.369.750-21", pedidoItens, DateTime.Now, null, 100);
-            var pedidoService = new PedidoService(_itemRepository, _pedidoRepository, _cupomRepository, _calculadorFrete);
+            var pedidoService = new PedidoService(_itemRepository, _pedidoRepository, _cupomRepository);
 
             var actual = await pedidoService.ExecutarAsync(command);
 

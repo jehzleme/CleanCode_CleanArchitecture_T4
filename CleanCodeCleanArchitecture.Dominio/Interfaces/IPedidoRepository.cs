@@ -6,5 +6,6 @@ namespace CCCA.Dominio.Interfaces
     public interface IPedidoRepository
     {
         Task Salvar(Pedido pedido);
+        int ObterUltimoCodigoSequencia();
     }
 }

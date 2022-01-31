@@ -4,6 +4,7 @@ namespace CCCA.Dominio.Entidades
 {
     public class PedidoItem
     {
+        //public Item Item { get; private set; }
         public Guid ItemId { get; private set; }
         public double Preco { get; private set; }
         public int Quantidade { get; private set; }

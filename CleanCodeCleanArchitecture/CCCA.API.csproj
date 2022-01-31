@@ -8,5 +8,11 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CCCA.Infra\CCCA.Infra.csproj" />
+    <ProjectReference Include="..\CleanCodeCleanArchitecture.Aplicacao\CCCA.Aplicacao.csproj" />
+    <ProjectReference Include="..\CleanCodeCleanArchitecture.Dominio\CCCA.Dominio.csproj" />
+  </ItemGroup>
+
 
 </Project>

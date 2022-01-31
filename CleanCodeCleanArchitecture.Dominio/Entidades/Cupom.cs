@@ -20,6 +20,12 @@ namespace CCCA.Dominio.Entidades
             Desconto = ObterDesconto(cupom);
         }
 
+        public double CalcularDesconto(double valor)
+        {
+            if (!Valido) return 0;
+                return (valor * Desconto) / 100;
+        }
+
         private double ObterDesconto(string cupom)
         {
             var digitosCupom = Regex.Replace(cupom, "[aA-zZ]", "");

@@ -17,7 +17,7 @@ namespace CCCA.Dominio.Tests
             
             pedido.AdicionarCupom(desconto);
 
-            pedido.Desconto.Should().BeNull();
+            pedido.Cupom.Should().BeNull();
         }
         
         [Test]
@@ -30,7 +30,7 @@ namespace CCCA.Dominio.Tests
             
             pedido.AdicionarCupom(desconto);
 
-            pedido.Desconto.Should().Be(desconto);
+            pedido.Cupom.Should().Be(desconto);
         }
         
         [Test]
@@ -43,7 +43,7 @@ namespace CCCA.Dominio.Tests
             
             pedido.AdicionarCupom(desconto);
 
-            pedido.Desconto.Should().Be(desconto);
+            pedido.Cupom.Should().Be(desconto);
         }
     }
 }

@@ -1,7 +1,7 @@
-﻿using CCCA.Dominio;
-using CCCA.Dominio.Entidades;
+﻿using CCCA.Dominio.Entidades;
 using CCCA.Dominio.Interfaces;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CCCA.Aplicacao
@@ -11,19 +11,18 @@ namespace CCCA.Aplicacao
         private readonly IItemRepository _itemRepository;
         private readonly IPedidoRepository _pedidoRepository;
         private readonly ICupomRepository _cupomRepository;
-        private readonly ICalculadorFrete _calculadorFrete;
 
-        public PedidoService(IItemRepository itemRepository, IPedidoRepository pedidoRepository, ICupomRepository cupomRepository, ICalculadorFrete calculadorFrete)
+        public PedidoService(IItemRepository itemRepository, IPedidoRepository pedidoRepository, ICupomRepository cupomRepository)
         {
             _itemRepository = itemRepository;
             _pedidoRepository = pedidoRepository;
             _cupomRepository = cupomRepository;
-            _calculadorFrete = calculadorFrete;
         }
 
         public async Task<PedidoFeitoCommand> ExecutarAsync(PedidoCommand command)
         {
-            var pedido = new Pedido(command.Cpf, command.Data);
+            //var sequencia = _pedidoRepository.ObterUltimoCodigoSequencia();
+            var pedido = new Pedido(command.Cpf, command.Data, command.Distancia);
             foreach (var pedidoItem in command.PedidoItens)
             {
                 var item = await _itemRepository.ObterPorId(pedidoItem.ItemId);
@@ -39,7 +38,9 @@ namespace CCCA.Aplicacao
                     pedido.AdicionarCupom(cupom);
             }
 
-            pedido.CalcularFrete(command.Distancia, _calculadorFrete);
+            var frete = new CalculadorFrete(_itemRepository);
+            var calculoFrete = frete.CalcularFrete(pedido.PedidoItens.ToList(), command.Distancia);
+            pedido.AdicionarFrete(calculoFrete);
 
             await _pedidoRepository.Salvar(pedido);
 
